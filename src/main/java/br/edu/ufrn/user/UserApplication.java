@@ -2,10 +2,10 @@ package br.edu.ufrn.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+@EnableWebMvc
 @SpringBootApplication
-@EnableWebFlux
 public class UserApplication {
 
 	public static void main(String[] args) {

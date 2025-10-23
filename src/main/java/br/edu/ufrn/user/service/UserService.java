@@ -1,5 +1,7 @@
 package br.edu.ufrn.user.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,8 +9,6 @@ import br.edu.ufrn.user.model.User;
 import br.edu.ufrn.user.record.CreateUserDTO;
 import br.edu.ufrn.user.record.UserDTO;
 import br.edu.ufrn.user.repository.UserRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 public class UserService {
@@ -16,49 +16,44 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Flux<UserDTO> getAll() {
+    public List<UserDTO> getAll() {
         return userRepository.findAll()
-            .map(
-                user -> new UserDTO(
-                    user.getId(),
-                    user.getName(),
-                    user.getAge(),
-                    user.getCreatedAt()
-                )
-            );
+            .stream()
+            .map(user -> new UserDTO(
+                user.getId(),
+                user.getName(),
+                user.getAge(),
+                user.getCreatedAt()
+                ))
+            .toList();
     }
 
-    public Mono<UserDTO> getById(String id) {
-        return userRepository.findById(id)
-            .map(
-                user -> new UserDTO(
-                    user.getId(),
-                    user.getName(),
-                    user.getAge(),
-                    user.getCreatedAt()
-                )
-            );
+    public UserDTO getById(String id) {
+        User user = userRepository.findById(id).get();
+        return new UserDTO(
+            user.getId(),
+            user.getName(),
+            user.getAge(),
+            user.getCreatedAt());
     }
 
-    public Mono<UserDTO> save(CreateUserDTO createUserDTO) {
-        User userModel = new User(
+    public UserDTO save(CreateUserDTO createUserDTO) {
+        User user = new User(
             createUserDTO.name(),
             createUserDTO.age()
         );
 
-        return userRepository.save(userModel)
-            .map(
-                user -> new UserDTO(
-                    user.getId(),
-                    user.getName(),
-                    user.getAge(),
-                    user.getCreatedAt()
-                )
-            );
+        User savedUser = userRepository.save(user);
+
+        return new UserDTO(
+            savedUser.getId(),
+            savedUser.getName(),
+            savedUser.getAge(),
+            savedUser.getCreatedAt());
     }
 
-    public Mono<Void> delete(String id) {
-        return userRepository.deleteById(id);
+    public void delete(String id) {
+        userRepository.deleteById(id);
     }
     
 }

@@ -1,5 +1,7 @@
 package br.edu.ufrn.user.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -9,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import br.edu.ufrn.user.record.CreateUserDTO;
 import br.edu.ufrn.user.record.UserDTO;
 import br.edu.ufrn.user.service.UserService;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Controller
 public class UserGraphQLController {
@@ -19,23 +19,23 @@ public class UserGraphQLController {
     private UserService userService;
 
     @QueryMapping
-    public Flux<UserDTO> getAll() {
+    public List<UserDTO> getAll() {
         return userService.getAll();
     }
     
     @QueryMapping
-    public Mono<UserDTO> getById(@Argument String id) {
+    public UserDTO getById(@Argument String id) {
         return userService.getById(id);
     }
     
     @MutationMapping
-    public Mono<UserDTO> save(@Argument("createUserInput") CreateUserDTO createUserDTO) {
+    public UserDTO save(@Argument("createUserInput") CreateUserDTO createUserDTO) {
         return userService.save(createUserDTO);
     }
     
     @MutationMapping
-    public Mono<Void> delete(@Argument String id) {
-        return userService.delete(id);
+    public void delete(@Argument String id) {
+        userService.delete(id);
     }
     
 }
